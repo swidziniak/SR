@@ -19,7 +19,10 @@ class SimulationExecutor:
 
         per_click_cost = PartnersProfiles("C0F515F0A2D0A5D9F854008BA76EB537").get_per_click_cost()
 
-        start_date = datetime.date(2020, 9, 30)
+        # 537
+        # start_date = datetime.date(2020, 9, 30)
+        # 887
+        start_date = datetime.date(2020, 8, 3)
         simulator_core.SimulatorCore(self.partners_to_involve_in_simulation, self.partners_to_read_data_from,
                                      start_date, self.pseudorandom_seed, self.number_of_simulation_steps,
                                      per_click_cost).next_day()

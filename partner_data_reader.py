@@ -7,10 +7,13 @@ class PartnerDataReader:
         self.today = today
 
     def next_day(self):
-        df = pd.read_csv(
-            'resources/sorted/sorted_' + self.partner_id + '_dataset.csv')
-        df['click_timestamp'] = pd.to_datetime(df['click_timestamp']).dt.strftime("%m/%d/%Y")
-        date_time2 = self.today.strftime("%m/%d/%Y")
+        # df = pd.read_csv(
+        #     'resources/sorted/sorted_' + self.partner_id + '_dataset.csv')
+        df = pd.read_csv('C306F0AD20C9B20C69271CC79B2E0887.csv')
 
-        new_df = df.loc[(df['click_timestamp'] == date_time2)]
+        # normal date format
+        df['click_timestamp'] = pd.to_datetime(df['click_timestamp']).dt.strftime('%Y-%m-%d')
+        date = self.today.strftime('%Y-%m-%d')
+
+        new_df = df.loc[(df['click_timestamp'] == date)]
         return new_df

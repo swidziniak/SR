@@ -16,6 +16,7 @@ class Optimizer:
         dummy_how_many_products = round(len(dummy_list_of_potentially_excluded_products) / how_many_ratio)
         random.seed(self.pseudorandom_seed)
         excluded_products = random.sample(dummy_list_of_potentially_excluded_products, dummy_how_many_products)
+
         return excluded_products
 
     def next_day(self):
@@ -28,6 +29,8 @@ class Optimizer:
             today_excluded_products = self.get_excluded_products_pseudorandomly(self.last_day_excluded_products)
             # today_excluded_products = products to exclude
             print(f'Number of products excluded today: {len(today_excluded_products)}')
+            today_excluded_products.sort()
+
             return today_excluded_products
         else:
             return []

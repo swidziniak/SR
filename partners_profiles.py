@@ -6,10 +6,9 @@ class PartnersProfiles:
         self.partner_id = partner_id
 
     def get_per_click_cost(self):
-        df = pd.read_csv(
-            'resources/sorted/sorted_' + self.partner_id + '_dataset.csv')
         # df = pd.read_csv(
-        #     'C0F515F0A2D0A5D9F854008BA76EB537.csv')
+        #     'resources/sorted/sorted_' + self.partner_id + '_dataset.csv')
+        df = pd.read_csv('C306F0AD20C9B20C69271CC79B2E0887.csv')
 
         sales_amount = df.loc[(df['sales_amount'] != -1)].sum()['sales_amount']
         number_of_clicks = df.count()['sales_amount']
