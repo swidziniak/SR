@@ -1,6 +1,4 @@
 import pandas as pd
-import numpy as np
-import datetime
 
 
 class PartnerDataReader:
@@ -9,11 +7,10 @@ class PartnerDataReader:
         self.today = today
 
     def next_day(self):
-        df = pd.read_csv('resources/sorted/sorted_' + self.partner_id + '_dataset.csv')
-        print(self.partner_id)
-        date_time = self.today.strftime("%Y-%m-%d")
-        print(date_time)
+        df = pd.read_csv(
+            'resources/sorted/sorted_' + self.partner_id + '_dataset.csv')
+        df['click_timestamp'] = pd.to_datetime(df['click_timestamp']).dt.strftime("%m/%d/%Y")
+        date_time2 = self.today.strftime("%m/%d/%Y")
 
-        print((df['click_timestamp'].astype(str).str.contains(date_time)))
-        new_df = df.loc[(df['click_timestamp'].astype(str).str.contains(date_time))]
+        new_df = df.loc[(df['click_timestamp'] == date_time2)]
         return new_df

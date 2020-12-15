@@ -1,11 +1,8 @@
-import DatasetSplitter
+from simulation_executor import SimulationExecutor
 
 
 def main():
-    splitter = DatasetSplitter.DatasetSplitter()
-    # splitter.load_dataset()
-    # splitter.split_dataset_by_partners()
-    # splitter.timestamps_to_sorted_dates()
+    SimulationExecutor(["C0F515F0A2D0A5D9F854008BA76EB537"], ["C0F515F0A2D0A5D9F854008BA76EB537"], 40, 0, 12)
 
 
 if __name__ == "__main__":
