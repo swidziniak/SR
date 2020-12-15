@@ -27,14 +27,14 @@ class SimulatorCore:
             for partner_id in self.partners_to_read_data_from:
                 # add to dataframe
                 df = (PartnerDataReader(partner_id, self.today).next_day()).append(df, ignore_index=True)
-            print("==========================================================")
-            print("Day", x + 1, ":", self.today.strftime("%m/%d/%Y"))
+            print('==========================================================')
+            print(f'Day {x + 1}: {self.today.strftime("%d/%m/%Y")}')
             if len(yesterday_df) > 0:
-                print("Yesterday dataset length:", len(yesterday_df["product_id"].unique()))
+                print('Yesterday dataset length:', len(yesterday_df['product_id'].unique()))
             else:
-                print("Yesterday dataset length: 0")
+                print('Yesterday dataset length: 0')
 
-            print("Number of last day excluded products: ", len(last_day_excluded_products))
+            print(f'Number of last day excluded products: {len(last_day_excluded_products)}')
 
             # initialize optimization for partner
             last_day_excluded_products = Optimizer(yesterday_df, last_day_excluded_products,
@@ -43,8 +43,8 @@ class SimulatorCore:
             today_df = df[~df['product_id'].isin(last_day_excluded_products)]
             yesterday_df = yesterday_df.append(today_df)
 
-            print("Initial dataset length:", len(df["product_id"].unique()))
-            print("Dataset length without excluded products from day before:", len(yesterday_df["product_id"].unique()))
+            print('Initial dataset length:', len(df['product_id'].unique()))
+            print('Dataset length without excluded products from day before:', len(yesterday_df["product_id"].unique()))
 
             sales_amount = today_df.loc[(today_df['sales_amount'] != -1)].sum()['sales_amount']
 
@@ -57,6 +57,7 @@ class SimulatorCore:
 
             delta = datetime.timedelta(1)
             self.today += delta
+            print('===========================END============================')
 
         accumulated_sustained_profit_dataframe = pd.DataFrame(rows, columns=['Days of simulation', 'Accumulated sustained profit'])
         accumulated_sustained_profit_dataframe.plot(x='Days of simulation', y='Accumulated sustained profit', label=self.partners_to_read_data_from[0])
