@@ -12,7 +12,7 @@ class PartnerDataReader:
         df = pd.read_csv('C306F0AD20C9B20C69271CC79B2E0887.csv')
 
         # normal date format
-        df['click_timestamp'] = pd.to_datetime(df['click_timestamp']).dt.strftime('%Y-%m-%d')
+        df['click_timestamp'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.strftime('%Y-%m-%d')
         date = self.today.strftime('%Y-%m-%d')
 
         new_df = df.loc[(df['click_timestamp'] == date)]
