@@ -17,7 +17,8 @@ class SimulationExecutor:
                 partners_to_involve_in_simulation.append(partner)
         self.partners_to_involve_in_simulation = partners_to_involve_in_simulation
 
-        per_click_cost = PartnersProfiles("C0F515F0A2D0A5D9F854008BA76EB537").get_per_click_cost()
+        per_click_cost = PartnersProfiles("C306F0AD20C9B20C69271CC79B2E0887").get_per_click_cost()
+        # per_click_cost = PartnersProfiles("C0F515F0A2D0A5D9F854008BA76EB537").get_per_click_cost()
 
         # 537
         # start_date = datetime.date(2020, 9, 30)
