@@ -18,55 +18,48 @@ class SimulatorCore:
         self.per_click_cost = per_click_cost
 
     def next_day(self):
-        data_list = []
-        last_day_excluded_products = []
-        last_day_df = pd.DataFrame()
-        accumulated_profit = 0
+        yesterday_df = pd.DataFrame()
         log = {'strategy': 'random', 'days': []}
         products_seen_so_far = []
+        products_excluded_yesterday = []
+        accumulated_profit = 0
 
         rows = [[0, 0]]
         for x in range(self.number_of_simulation_steps):
             df = pd.DataFrame()
 
-            if(len(last_day_df)):
-                products_seen_so_far = sorted(last_day_df['product_id'].unique().tolist())
+            if len(yesterday_df):
+                products_seen_so_far = sorted(yesterday_df['product_id'].unique().tolist())
+
             # read data for each day for all partners in partners_to_involve_in_simulation
             for partner_id in self.partners_to_read_data_from:
                 # add to dataframe
                 df = (PartnerDataReader(partner_id, self.today).next_day()).append(df, ignore_index=True)
             print('==========================================================')
             print(f'Day {x + 1}: {self.today.strftime("%Y-%m-%d")}')
-            # if len(last_day_df) > 0:
-            #     print('Yesterday dataset length:', len(last_day_df['product_id'].unique()))
-            # else:
-            #     print('Yesterday dataset length: 0')
+            print(f'No. of products excluded yesterday: {len(products_excluded_yesterday)}')
 
-            print(f'Number of last day excluded products: {len(last_day_excluded_products)}')
+            # initialize optimization
+            products_excluded_yesterday = Optimizer(yesterday_df, products_excluded_yesterday,
+                                                    self.pseudorandom_seed).next_day()
 
-            # initialize optimization for partner
-            last_day_excluded_products = Optimizer(last_day_df, last_day_excluded_products,
-                                                   self.pseudorandom_seed).next_day()
-
-            # filter dataset based on last_day_excluded_products
-            today_df = df[~df['product_id'].isin(last_day_excluded_products)]
-            last_day_df = last_day_df.append(today_df)
-
-            # print('Initial dataset length:', len(df['product_id'].unique()))
-            # print('Dataset length without excluded products from day before:', len(last_day_df["product_id"].unique()))
+            # filter dataset based on products_excluded_yesterday
+            today_df = df[~df['product_id'].isin(products_excluded_yesterday)]
+            yesterday_df = yesterday_df.append(today_df)
 
             sales_amount = today_df.loc[(today_df['sales_amount'] != -1)].sum()['sales_amount']
-
             number_of_clicks = today_df.loc[(today_df['product_id'] != -1)].count()['product_id']
 
             accumulated_profit = accumulated_profit + ((sales_amount * 0.22) - (number_of_clicks * self.per_click_cost))
-            # profit_per_day = sales_amount * 0.22 - number_of_clicks * self.per_click_cost
             today_products = df['product_id'].tolist()
-            actually_excluded_products = sorted(list(set(last_day_excluded_products).intersection(set(today_products))))
+            products_actually_excluded = sorted(
+                list(set(products_excluded_yesterday).intersection(set(today_products))))
 
             rows.append([x + 1, accumulated_profit])
 
-            log['days'].append({'day': self.today.strftime('%Y-%m-%d'), 'productsSeenSoFar': products_seen_so_far, 'productsToExclude': last_day_excluded_products, 'productsActuallyExcluded': actually_excluded_products })
+            log['days'].append({'day': self.today.strftime('%Y-%m-%d'), 'productsSeenSoFar': products_seen_so_far,
+                                'productsToExclude': products_excluded_yesterday,
+                                'productsActuallyExcluded': products_actually_excluded})
 
             delta = datetime.timedelta(1)
             self.today += delta
@@ -76,6 +69,8 @@ class SimulatorCore:
             with open(f'logs/{partner_id}_log.json', 'w') as outfile:
                 json.dump(log, sort_keys=False, indent=4, separators=(',', ': '), fp=outfile)
 
-        accumulated_sustained_profit_dataframe = pd.DataFrame(rows, columns=['Days of simulation', 'Accumulated sustained profit'])
-        accumulated_sustained_profit_dataframe.plot(x='Days of simulation', y='Accumulated sustained profit', label=self.partners_to_read_data_from[0])
+        accumulated_sustained_profit_dataframe = pd.DataFrame(rows, columns=['Days of simulation',
+                                                                             'Accumulated sustained profit'])
+        accumulated_sustained_profit_dataframe.plot(x='Days of simulation', y='Accumulated sustained profit',
+                                                    label=self.partners_to_read_data_from[0])
         plt.show()

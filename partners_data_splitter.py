@@ -9,7 +9,7 @@ import pandas as pd
 
 class PartnersDataSplitter:
     Vector = list
-    DEFAULT_COLUMNS = ["sale", "sales_amount", "time_delay_for_conversion", "click_timestamp", "nb_clicks_1week",
+    COLUMN_HEADERS = ["sale", "sales_amount", "time_delay_for_conversion", "click_timestamp", "nb_clicks_1week",
                        "product_price", "product_age_group", "device_type", "audience_id", "product_gender",
                        "product_brand", "category_1", "category_2", "category_3", "category_4", "category_5",
                        "category_6", "category_7", "product_country", "product_id", "product_title",
@@ -20,7 +20,7 @@ class PartnersDataSplitter:
         if columns:
             self.data_format = columns
         else:
-            self.data_format = PartnersDataSplitter.DEFAULT_COLUMNS
+            self.data_format = PartnersDataSplitter.COLUMN_HEADERS
         self.raw_dataset_df = None
 
     def load_dataset(self):
@@ -94,13 +94,7 @@ class PartnersDataSplitter:
     def add_column_headers(self):
         csv_files = os.listdir("resources/sorted")
 
-        headers = ["sale", "sales_amount", "time_delay_for_conversion", "click_timestamp", "nb_clicks_1week",
-                   "product_price", "product_age_group", "device_type", "audience_id", "product_gender",
-                   "product_brand", "category_1", "category_2", "category_3", "category_4", "category_5",
-                   "category_6", "category_7", "product_country", "product_id", "product_title",
-                   "partner_id", "user_id"]
-
         for file in csv_files:
             csv = pd.read_csv("resources/sorted/" + file, sep='\t')
-            data_frame = pd.DataFrame(csv.values, columns=headers)
+            data_frame = pd.DataFrame(csv.values, columns=PartnersDataSplitter.COLUMN_HEADERS)
             data_frame.to_csv("resources/sorted/" + file, sep=',', index=None)
