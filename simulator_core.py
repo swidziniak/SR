@@ -1,5 +1,4 @@
 import json
-
 from optimizer import Optimizer
 from partner_data_reader import PartnerDataReader
 import pandas as pd

@@ -1,11 +1,8 @@
 import os
 import re
 from datetime import datetime, date
-
 import pandas as pd
 
-
-# implementacja z pomocą Macieja Drzewieckiego
 
 class PartnersDataSplitter:
     Vector = list
